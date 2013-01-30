@@ -22,6 +22,6 @@ executable httpare
 
 library
   hs-source-dirs:    src
-  exposed-modules:
-    Httpare.Class
+  exposed-modules:   Httpare.Comparison
+                     , Httpare.Site
   build-depends:     base
