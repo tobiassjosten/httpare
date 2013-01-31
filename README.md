@@ -6,7 +6,7 @@ Compare one site to another.
 
 *NB: I'm adopting [Readme Driven Development](http://tom.preston-werner.com/2010/08/23/readme-driven-development.html) for this project and so what you read here might not yet be implemented until a 1.0.0 release.*
 
-    $ httpare -r http://vvv.tobiassjosten.net/ http://local.tobiassjosten.net/
+    $ httpare -r vvv.tobiassjosten.net local.tobiassjosten.net
     > 404 /about-tobias
     > 301 /blog -> /uber-blog
 
