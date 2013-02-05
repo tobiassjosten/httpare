@@ -20,8 +20,18 @@ check' :: String -> [String] -> [String] -> [String]
 check' site [] newUrls = newUrls
 check' site urls newUrls = newUrls ++ check' site (tail urls) newNewUrls
 	where
-		isSuccessful = True -- Check response for `head urls`
-		newNewUrls = if isSuccessful then newUrls ++ [head urls] else newUrls
+		url = head urls
+		newNewUrls = if checkUrl url then newUrls ++ [url] else newUrls
+
+checkUrl url = do
+	response <- Network.HTTP.simpleHTTP (getRequest url)
+	responseCode <- getResponseCode response
+	isSuccessful responseCode
+
+isSuccessful :: ResponseCode -> Bool
+isSuccessful (2, _, _) = True
+isSuccessful (3, _, _) = True
+isSuccessful responseCode = False
 
 getCodeAsString :: ResponseCode -> String
 getCodeAsString (a, b, c) = show a ++ show b ++ show c
