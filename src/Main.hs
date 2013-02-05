@@ -1,5 +1,6 @@
 module Main where
 
+import Control.Monad (filterM)
 import Network.HTTP
 import System.Environment (getArgs)
 
@@ -10,28 +11,30 @@ main = do
 		sourceSite = "http://" ++ (head args)
 		targetSite = "http://" ++ (head $ tail args)
 
-	mapM_ putStrLn $ check targetSite $ check sourceSite ["/"]
+	sourceUrls <- check sourceSite ["/"]
+	check targetSite sourceUrls
 
-check :: String -> [String] -> [String]
-check site [] = []
-check site urls = check' site urls []
+	return ()
 
-check' :: String -> [String] -> [String] -> [String]
-check' site [] newUrls = newUrls
-check' site urls newUrls = newUrls ++ check' site (tail urls) newNewUrls
-	where
-		url = head urls
-		newNewUrls = if checkUrl url then newUrls ++ [url] else newUrls
+check :: String -> [String] -> IO [String]
+check site urls = filterM (checkUrl site) urls
 
-checkUrl url = do
-	response <- Network.HTTP.simpleHTTP (getRequest url)
+checkUrl :: String -> String -> IO Bool
+checkUrl site url = do
+	response <- Network.HTTP.simpleHTTP (getRequest $ site ++ url)
 	responseCode <- getResponseCode response
-	isSuccessful responseCode
+	printResponse responseCode url
+	return $ isSuccessful responseCode
 
 isSuccessful :: ResponseCode -> Bool
 isSuccessful (2, _, _) = True
 isSuccessful (3, _, _) = True
 isSuccessful responseCode = False
+
+printResponse :: ResponseCode -> String -> IO ()
+printResponse responseCode url
+	| not $ isSuccessful responseCode = putStrLn $ (getCodeAsString responseCode) ++ " " ++ url
+	| otherwise = return ()
 
 getCodeAsString :: ResponseCode -> String
 getCodeAsString (a, b, c) = show a ++ show b ++ show c
