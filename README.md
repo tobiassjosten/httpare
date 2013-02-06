@@ -2,6 +2,8 @@
 
 Compare one site to another.
 
+**HTTPare** is built mainly for quality assuring website migrations, where you want to be certain all the paths of the old site is handled in the new one. This is important both to avoid having users ending up at a 404 page and for keeping inbound link juice (SEO).
+
 ## Usage
 
 *NB: I'm adopting [Readme Driven Development](http://tom.preston-werner.com/2010/08/23/readme-driven-development.html) for this project and so what you read here might not yet be implemented until a 1.0.0 release.*
