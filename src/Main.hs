@@ -8,8 +8,8 @@ main :: IO ()
 main = do
 	args <- getArgs
 	let
-		sourceSite = "http://" ++ (head args)
-		targetSite = "http://" ++ (head $ tail args)
+		sourceSite = head args
+		targetSite = head $ tail args
 
 	sourceUrls <- check sourceSite ["/"]
 	check targetSite sourceUrls
@@ -17,11 +17,13 @@ main = do
 	return ()
 
 check :: String -> [String] -> IO [String]
-check site urls = filterM (checkUrl site) urls
+check site urls = do
+	putStrLn site
+	filterM (checkUrl site) urls
 
 checkUrl :: String -> String -> IO Bool
 checkUrl site url = do
-	response <- Network.HTTP.simpleHTTP (getRequest $ site ++ url)
+	response <- Network.HTTP.simpleHTTP (getRequest $ "http://" ++ site ++ url)
 	responseCode <- getResponseCode response
 	printResponse responseCode url
 	return $ isSuccessful responseCode
